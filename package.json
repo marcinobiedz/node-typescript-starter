@@ -1,0 +1,29 @@
+{
+  "name": "typescript-starter",
+  "version": "1.0.0",
+  "description": "simple starter ts",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./dist/index.js",
+    "compile": "tsc",
+    "watch-ts": "tsc -w",
+    "watch-js": "nodemon ./dist/index.js",
+    "debug": "concurrently -k \"npm:watch-*\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcinobiedz/node-typescript-starter.git"
+  },
+  "author": "https://github.com/marcinobiedz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marcinobiedz/node-typescript-starter/issues"
+  },
+  "homepage": "https://github.com/marcinobiedz/node-typescript-starter#readme",
+  "dependencies": {
+    "@types/node": "14.14.33",
+    "typescript": "4.2.3",
+    "nodemon": "2.0.7",
+    "concurrently": "6.0.0"
+  }
+}
