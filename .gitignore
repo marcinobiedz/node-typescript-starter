@@ -1,8 +1,12 @@
 *
 !README.md
+!docker-compose.yml
+!Dockerfile
 !.gitignore
 !yarn.lock
 !package.json
 !tsconfig.json
 !src/
-!src/*
+!src/**/*
+!src/static/
+!src/static/**/*

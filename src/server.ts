@@ -1,1 +1,1 @@
-console.warn("dupa")
+console.log("Empty server")

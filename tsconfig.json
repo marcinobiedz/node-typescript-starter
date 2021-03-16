@@ -5,7 +5,9 @@
     "sourceMap": true,
     "strict": true,
     "moduleResolution": "Node",
-    "outDir": "dist"
+    "resolveJsonModule": true,
+    "outDir": "dist",
+    "rootDir": "src"
   },
   "exclude": [
     "node_modules"
