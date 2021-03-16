@@ -1,6 +1,5 @@
 *
 !README.md
-!yarn.lock
 !.gitignore
 !package.json
 !tsconfig.json
