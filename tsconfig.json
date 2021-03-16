@@ -5,7 +5,8 @@
     "sourceMap": true,
     "strict": true,
     "moduleResolution": "Node",
-    "outDir": "dist"
+    "outDir": "dist",
+    "rootDir": "src"
   },
   "exclude": [
     "node_modules"
