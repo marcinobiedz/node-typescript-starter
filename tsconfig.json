@@ -6,9 +6,9 @@
     "strict": true,
     "moduleResolution": "Node",
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "noUnusedParameters": true,
+    "noUnusedLocals": true
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
