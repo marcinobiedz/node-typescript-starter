@@ -1,9 +1,14 @@
 export type Configuration = {
-    database: DatabaseConfiguration
-}
+  database: DatabaseConfiguration;
+  metalsAPI: MetalsApiConfiguration;
+};
 
 export type DatabaseConfiguration = {
-    user: string,
-    password: string
-    database: string
-}
+  user: string;
+  password: string;
+  database: string;
+};
+
+export type MetalsApiConfiguration = {
+  token: string;
+};

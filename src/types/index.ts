@@ -1,1 +1,1 @@
-export {Configuration, DatabaseConfiguration} from "./configuration"
+export * from "./configuration";

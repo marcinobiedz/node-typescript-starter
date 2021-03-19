@@ -3,5 +3,8 @@
     "user": "root",
     "password": "root",
     "database": "finance"
+  },
+  "metalsAPI": {
+    "token": "eo3sitv9vgh4nhar3j3yfjsw142z28912hwv647zy3phyjcqf532yyy6ivqf"
   }
 }

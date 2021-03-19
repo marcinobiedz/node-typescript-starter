@@ -2,18 +2,21 @@ import * as config from "./static/configuration.json";
 import { createConnection } from "mariadb";
 import { Configuration } from "./types";
 import { DatabaseManager } from "./database";
-import { Pricer } from "./pricer";
+import { MetalsAPI, Pricer } from "./pricer";
 
 const configuration: Configuration = config;
-const { database } = configuration;
+const { database, metalsAPI } = configuration;
 
 createConnection(database)
   .then((connection) => {
     console.log("Connected with database...");
 
     const databaseManager = DatabaseManager.create(connection);
-    const pricer = Pricer.create(databaseManager);
+    const metalsApi = MetalsAPI.create(metalsAPI);
+    const pricer = Pricer.create(databaseManager, metalsApi);
 
     pricer.run();
   })
-  .catch(console.error);
+  .catch(() => {
+    console.warn("Cannot connect to database!");
+  });
