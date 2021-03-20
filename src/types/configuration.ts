@@ -11,4 +11,6 @@ export type DatabaseConfiguration = {
 
 export type MetalsApiConfiguration = {
   token: string;
+  base: string;
+  symbols: string[];
 };

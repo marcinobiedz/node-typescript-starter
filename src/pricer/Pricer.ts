@@ -14,7 +14,10 @@ export namespace Pricer {
       "*/5 * * * * *",
       function () {
         const latestRatesReq = MetalsAPI.LatestRates.Request.create();
-        metalsApi.getLatestRates(latestRatesReq).then(console.log);
+        metalsApi
+          .getLatestRates(latestRatesReq)
+          .then(console.warn)
+          .catch(console.error);
       },
       null,
       false
