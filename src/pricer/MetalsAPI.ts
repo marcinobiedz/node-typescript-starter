@@ -13,7 +13,7 @@ export namespace MetalsAPI {
   export type SupportedSymbols = Record<string, string>;
   export type LatestRates = {
     success: true;
-    unixTimestamp: number;
+    timestamp: number;
     base: string;
     rates: Record<string, any>;
   };
@@ -40,8 +40,10 @@ export namespace MetalsAPI {
     };
   };
 
+  export type MetalsAPIOptions = MetalsApiConfiguration & { token: string };
+
   const metalsApiUrl = "https://www.metals-api.com";
-  export const create = (configuration: MetalsApiConfiguration): MetalsAPI => {
+  export const create = (configuration: MetalsAPIOptions): MetalsAPI => {
     const { token } = configuration;
     const baseURL = new URL(metalsApiUrl);
 
@@ -56,7 +58,12 @@ export namespace MetalsAPI {
         latestURL.searchParams.set("symbols", symbols.join(","));
 
         // ToDo: Change to actual backend requests
-        return Promise.resolve(nextRates());
+        return new Promise<MetalsAPI.LatestRates | MetalsAPI.ErrorResponse>(
+          (resolve, reject) => {
+            const newRates = nextRates();
+            newRates.success ? resolve(newRates) : reject(newRates);
+          }
+        );
       },
       getSupportedSymbols() {
         const symbolsURL = new URL("api/symbols", baseURL);

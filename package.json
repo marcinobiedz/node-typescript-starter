@@ -10,7 +10,7 @@
     "watch-ts": "tsc -w",
     "watch-js-server": "nodemon ./dist/server.js",
     "watch-js-ticker": "nodemon ./dist/ticker.js",
-    "debug": "concurrently -k \"npm:watch-*\"",
+    "debug": "cross-env TOKEN_API=mySuperToken concurrently -k \"npm:watch-*\"",
     "start": "concurrently \"npm:start-*\""
   },
   "repository": {
@@ -25,6 +25,7 @@
   "homepage": "https://github.com/marcinobiedz/node-typescript-starter#readme",
   "dependencies": {
     "cron": "1.7.2",
+    "cross-env": "7.0.3",
     "mariadb": "^2.5.3",
     "concurrently": "^6.0.0",
     "node-fetch": "2.6.1",

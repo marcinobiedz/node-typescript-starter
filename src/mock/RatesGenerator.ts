@@ -16,8 +16,6 @@ const getNextRate = (value: number): number => {
   const finalPercentage = basePercentage / 10000;
   const isEven = basePercentage % 2;
 
-  console.log(finalPercentage, isEven);
-
   return isEven
     ? value + finalPercentage * value
     : value - finalPercentage * value;
@@ -45,7 +43,7 @@ export const nextRates = ():
   return {
     success: true,
     base: "USD",
-    unixTimestamp: Math.floor(Date.now() / 1000),
+    timestamp: Math.floor(Date.now() / 1000),
     rates: baseValues,
   };
 };
