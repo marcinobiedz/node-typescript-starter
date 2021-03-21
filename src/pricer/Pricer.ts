@@ -16,8 +16,8 @@ export namespace Pricer {
         const latestRatesReq = MetalsAPI.LatestRates.Request.create();
         metalsApi
           .getLatestRates(latestRatesReq)
-          .then(console.warn)
-          .catch(console.error);
+          .then(console.log)
+          .catch((error: MetalsAPI.ErrorResponse) => console.error(error));
       },
       null,
       false

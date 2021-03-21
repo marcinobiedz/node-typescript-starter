@@ -7,7 +7,7 @@ export type MetalsAPI = {
   getSupportedSymbols(): Promise<MetalsAPI.SupportedSymbols>;
   getLatestRates(
     options: MetalsAPI.LatestRates.Request
-  ): Promise<MetalsAPI.LatestRates | MetalsAPI.ErrorResponse>;
+  ): Promise<MetalsAPI.LatestRates>;
 };
 export namespace MetalsAPI {
   export type SupportedSymbols = Record<string, string>;
@@ -48,9 +48,7 @@ export namespace MetalsAPI {
     const baseURL = new URL(metalsApiUrl);
 
     return {
-      getLatestRates(
-        options: MetalsAPI.LatestRates.Request
-      ): Promise<MetalsAPI.LatestRates | MetalsAPI.ErrorResponse> {
+      getLatestRates(options) {
         const { symbols, base } = options;
         const latestURL = new URL("api/latest", baseURL);
         latestURL.searchParams.set("access_key", token);
@@ -58,12 +56,10 @@ export namespace MetalsAPI {
         latestURL.searchParams.set("symbols", symbols.join(","));
 
         // ToDo: Change to actual backend requests
-        return new Promise<MetalsAPI.LatestRates | MetalsAPI.ErrorResponse>(
-          (resolve, reject) => {
-            const newRates = nextRates();
-            newRates.success ? resolve(newRates) : reject(newRates);
-          }
-        );
+        return new Promise<MetalsAPI.LatestRates>((resolve, reject) => {
+          const newRates = nextRates();
+          newRates.success ? resolve(newRates) : reject(newRates);
+        });
       },
       getSupportedSymbols() {
         const symbolsURL = new URL("api/symbols", baseURL);
