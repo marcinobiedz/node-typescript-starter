@@ -1,14 +1,34 @@
-import { Connection } from "mariadb";
+import { Connection, FieldInfo } from "mariadb";
+import { Alerts } from "./models";
+import { QueryBuilder } from "./QueryBuilder";
+
+export type QueryResult<T> = T extends any[]
+  ? T & {
+      meta: FieldInfo[];
+    }
+  : {
+      log: {
+        affectedRows: number;
+        insertId: number;
+        warningStatus: number;
+      };
+    };
 
 export type DatabaseManager = {
-  get: VoidFunction;
+  Alerts: Alerts;
 };
 export namespace DatabaseManager {
+  export function executeQueryBase(connection: Connection) {
+    return function <T>(sql: string): Promise<QueryResult<T>> {
+      return connection.query(sql);
+    };
+  }
+
   export const create = (connection: Connection): DatabaseManager => {
-    connection.query("SELECT * from Alerts").then(console.warn);
+    const queryBuilder = QueryBuilder.create();
 
     return {
-      get() {},
+      Alerts: Alerts.create(connection, queryBuilder),
     };
   };
 }

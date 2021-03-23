@@ -6,7 +6,7 @@ import { nextRates } from "../mock";
 export type MetalsAPI = {
   getSupportedSymbols(): Promise<MetalsAPI.SupportedSymbols>;
   getLatestRates(
-    options: MetalsAPI.LatestRates.Request
+    options?: Partial<MetalsAPI.LatestRates.Request>
   ): Promise<MetalsAPI.LatestRates>;
 };
 export namespace MetalsAPI {
@@ -22,15 +22,6 @@ export namespace MetalsAPI {
       base: string;
       symbols: string[];
     };
-    export namespace Request {
-      const defaults: Request = {
-        base: "USD",
-        symbols: ["XAU", "XAG", "XPT"],
-      };
-      const withDefaults = mergeRight(defaults);
-      export const create = (options: Partial<Request> = {}): Request =>
-        withDefaults(options);
-    }
   }
   export type ErrorResponse = {
     success: false;
@@ -39,17 +30,25 @@ export namespace MetalsAPI {
       info: string;
     };
   };
+  namespace RequestDefaults {
+    export const latestRatesDefaults: LatestRates.Request = {
+      base: "USD",
+      symbols: ["XAU", "XAG", "XPT"],
+    };
+  }
 
   export type MetalsAPIOptions = MetalsApiConfiguration & { token: string };
-
-  const metalsApiUrl = "https://www.metals-api.com";
   export const create = (configuration: MetalsAPIOptions): MetalsAPI => {
+    const metalsApiUrl = "https://www.metals-api.com";
     const { token } = configuration;
     const baseURL = new URL(metalsApiUrl);
 
     return {
-      getLatestRates(options) {
-        const { symbols, base } = options;
+      getLatestRates(options = {}) {
+        const { symbols, base } = mergeRight(
+          RequestDefaults.latestRatesDefaults,
+          options
+        );
         const latestURL = new URL("api/latest", baseURL);
         latestURL.searchParams.set("access_key", token);
         latestURL.searchParams.set("base", base);

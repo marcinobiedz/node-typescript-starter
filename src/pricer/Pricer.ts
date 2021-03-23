@@ -8,16 +8,16 @@ export type Pricer = {
 export namespace Pricer {
   export const create = (
     _dbManager: DatabaseManager,
-    metalsApi: MetalsAPI
+    _metalsApi: MetalsAPI
   ): Pricer => {
     const cronJob = new CronJob(
       "*/5 * * * * *",
       function () {
-        const latestRatesReq = MetalsAPI.LatestRates.Request.create();
-        metalsApi
-          .getLatestRates(latestRatesReq)
-          .then(console.log)
-          .catch((error: MetalsAPI.ErrorResponse) => console.error(error));
+        _dbManager.Alerts.getAlerts({ id: ["1"] }).then((values) => {
+          for (let i = 0; i < values.length; i++) {
+            console.log(values[i]);
+          }
+        });
       },
       null,
       false
