@@ -2,16 +2,14 @@ import { Connection, FieldInfo } from "mariadb";
 import { Alerts } from "./models";
 import { QueryBuilder } from "./QueryBuilder";
 
-export type QueryResult<T> = T extends any[]
+export type QueryResult<T = unknown> = T extends any[]
   ? T & {
       meta: FieldInfo[];
     }
   : {
-      log: {
-        affectedRows: number;
-        insertId: number;
-        warningStatus: number;
-      };
+      affectedRows: number;
+      insertId: number;
+      warningStatus: number;
     };
 
 export type DatabaseManager = {

@@ -15,7 +15,7 @@ export namespace MetalsAPI {
     success: true;
     timestamp: number;
     base: string;
-    rates: Record<string, any>;
+    rates: Record<string, number>;
   };
   export namespace LatestRates {
     export type Request = {

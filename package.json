@@ -4,6 +4,7 @@
   "description": "simple starter ts",
   "main": "index.js",
   "scripts": {
+    "clean": "rimraf -rf dist",
     "compile": "tsc",
     "start-server": "node ./dist/server.js",
     "start-ticker": "node ./dist/ticker.js",
@@ -11,7 +12,8 @@
     "watch-js-server": "nodemon ./dist/server.js",
     "watch-js-ticker": "nodemon ./dist/ticker.js",
     "debug": "cross-env TOKEN_API=mySuperToken concurrently -k \"npm:watch-*\"",
-    "start": "concurrently \"npm:start-*\""
+    "start": "npm run clean && npm run compile && npm run debug",
+    "start:prod": "concurrently \"npm:start-*\""
   },
   "repository": {
     "type": "git",
@@ -40,7 +42,8 @@
     "lint-staged": "^10.5.4",
     "nodemon": "^2.0.7",
     "prettier": "^2.2.1",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "rimraf": "3.0.2"
   },
   "husky": {
     "hooks": {

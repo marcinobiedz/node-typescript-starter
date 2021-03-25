@@ -7,16 +7,21 @@ export type Pricer = {
 };
 export namespace Pricer {
   export const create = (
-    _dbManager: DatabaseManager,
-    _metalsApi: MetalsAPI
+    dbManager: DatabaseManager,
+    metalsApi: MetalsAPI
   ): Pricer => {
     const cronJob = new CronJob(
-      "*/5 * * * * *",
+      "*/20 * * * * *",
       function () {
-        _dbManager.Alerts.getAlerts({ id: ["1"] }).then((values) => {
-          for (let i = 0; i < values.length; i++) {
-            console.log(values[i]);
-          }
+        metalsApi.getLatestRates().then((value) => {
+          const { rates, base } = value;
+          const rate = rates["XAU"];
+
+          dbManager.Alerts.insertAlert({
+            base,
+            rate: 1 / rate,
+            symbol: "XAU",
+          }).then(console.warn);
         });
       },
       null,
