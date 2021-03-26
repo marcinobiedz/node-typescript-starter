@@ -1,5 +1,5 @@
 import { Connection, FieldInfo } from "mariadb";
-import { Alerts } from "./models";
+import { Alerts, Rates } from "./models";
 import { QueryBuilder } from "./QueryBuilder";
 
 export type QueryResult<T = unknown> = T extends any[]
@@ -14,6 +14,7 @@ export type QueryResult<T = unknown> = T extends any[]
 
 export type DatabaseManager = {
   Alerts: Alerts;
+  Rates: Rates;
 };
 export namespace DatabaseManager {
   export function executeQueryBase(connection: Connection) {
@@ -27,6 +28,7 @@ export namespace DatabaseManager {
 
     return {
       Alerts: Alerts.create(connection, queryBuilder),
+      Rates: Rates.create(connection, queryBuilder),
     };
   };
 }

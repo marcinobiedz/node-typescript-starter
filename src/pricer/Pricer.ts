@@ -1,6 +1,7 @@
 import { DatabaseManager } from "../database";
 import { CronJob } from "cron";
 import { MetalsAPI } from "./MetalsAPI";
+import { Converter } from "./Converter";
 
 export type Pricer = {
   run: VoidFunction;
@@ -14,14 +15,11 @@ export namespace Pricer {
       "*/20 * * * * *",
       function () {
         metalsApi.getLatestRates().then((value) => {
-          const { rates, base } = value;
-          const rate = rates["XAU"];
+          const convertedRates = Converter.convertRateFromApi(value);
 
-          dbManager.Alerts.insertAlert({
-            base,
-            rate: 1 / rate,
-            symbol: "XAU",
-          }).then(console.warn);
+          dbManager.Rates.insertRates(convertedRates)
+            .then(console.warn)
+            .catch(console.error);
         });
       },
       null,

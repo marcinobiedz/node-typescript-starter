@@ -1,15 +1,24 @@
-import { QueryBuilder, Select, Value } from "../QueryBuilder";
+import {
+  OrderValue,
+  QueryBuilder,
+  Select,
+  Value,
+  Insert,
+} from "../QueryBuilder";
 import { Connection } from "mariadb";
 import { DatabaseManager, QueryResult } from "../DatabaseManager";
-import { Insert } from "../QueryBuilder/Insert";
 
-type AlertsWhere = Partial<Record<keyof Alerts.Alert, Value[]>>;
-type AlertInsertValues = Pick<Alerts.Alert, "base" | "rate" | "symbol"> &
+type AlertInsert = Pick<Alerts.Alert, "base" | "rate" | "symbol"> &
   Partial<Pick<Alerts.Alert, "active">>;
+type AlertOptions = Partial<{
+  select: Array<keyof Alerts.Alert>;
+  where: Record<keyof Alerts.Alert, Value[]>;
+  order: Record<keyof Alerts.Alert, OrderValue>;
+  limit: number;
+}>;
 export type Alerts = {
-  getAllAlerts: () => Promise<QueryResult<Alerts.Alert[]>>;
-  getAlerts: (filter: AlertsWhere) => Promise<QueryResult<Alerts.Alert[]>>;
-  insertAlert: (values: AlertInsertValues) => Promise<QueryResult>;
+  getAlerts: (options: AlertOptions) => Promise<QueryResult<Alerts.Alert[]>>;
+  insertAlerts: (values: AlertInsert[]) => Promise<QueryResult>;
 };
 export namespace Alerts {
   export type Alert = {
@@ -27,10 +36,11 @@ export namespace Alerts {
   ): Alerts => {
     const executeQuery = DatabaseManager.executeQueryBase(connection);
     return {
-      insertAlert(values) {
-        const { active, ...rest } = values;
-        const defaultedValues =
-          active === undefined ? { ...rest } : { ...rest, active };
+      insertAlerts(values) {
+        const defaultedValues = values.map((value) => {
+          const { active, ...rest } = value;
+          return active === undefined ? { ...rest } : { ...rest, active };
+        });
         const insertOptions: Insert.Options = {
           into: table,
           values: defaultedValues,
@@ -39,15 +49,10 @@ export namespace Alerts {
         const insertQuery = queryBuilder.insert(insertOptions);
         return executeQuery(insertQuery);
       },
-      getAllAlerts() {
-        const selectOptions: Select.Options = { from: table };
-        const selectQuery = queryBuilder.select(selectOptions);
-        return executeQuery(selectQuery);
-      },
-      getAlerts(filter) {
+      getAlerts(options) {
         const selectOptions: Select.Options = {
           from: table,
-          where: filter,
+          ...options,
         };
         const selectQuery = queryBuilder.select(selectOptions);
         return executeQuery(selectQuery);

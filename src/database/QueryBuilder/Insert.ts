@@ -3,23 +3,26 @@ import { Value } from "./QueryBuilder";
 export namespace Insert {
   export type Options = {
     into: string;
-    values: Record<string, Value>;
+    values: Record<string, Value>[];
   };
 
   export const InsertFn = (options: Options) => {
     const { into, values } = options;
-    const keys = Object.keys(values);
-    const insertedValues = Object.values(values).map((value) =>
-      "string" === typeof value ? `'${value}'` : value
-    );
+    const [firstValue] = values;
+    const multipleValues = values.map((value) => {
+      const insertedValues = Object.values(value).map((val) =>
+        "string" === typeof val ? `'${val}'` : val
+      );
+      return `(${insertedValues.join(",")})`;
+    });
 
     const commandParts = [
       "INSERT",
       "INTO",
       into,
-      `(${keys.join(",")})`,
+      `(${Object.keys(firstValue).join(",")})`,
       "VALUES",
-      `(${insertedValues.join(",")})`,
+      `${multipleValues.join(",")}`,
     ];
 
     return commandParts.join(" ");
