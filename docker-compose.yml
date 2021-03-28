@@ -1,15 +1,30 @@
 services:
+  pricer:
+    depends_on:
+      - db
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - MYSQL_HOST=db
+    volumes:
+      - "./src:/app/src"
+
 
   db:
+    env_file:
+      - .env
     image: mariadb
     restart: always
-    ports:
-    - 3306:3306
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: finance
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
 
   adminer:
+    depends_on:
+      - db
     image: adminer
     restart: always
     ports:

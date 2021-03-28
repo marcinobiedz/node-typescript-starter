@@ -37,8 +37,7 @@ export namespace MetalsAPI {
     };
   }
 
-  export type MetalsAPIOptions = MetalsApiConfiguration & { token: string };
-  export const create = (configuration: MetalsAPIOptions): MetalsAPI => {
+  export const create = (configuration: MetalsApiConfiguration): MetalsAPI => {
     const metalsApiUrl = "https://www.metals-api.com";
     const { token } = configuration;
     const baseURL = new URL(metalsApiUrl);

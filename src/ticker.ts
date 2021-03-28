@@ -1,28 +1,43 @@
 import * as config from "./static/configuration.json";
 import { createConnection } from "mariadb";
-import { Configuration } from "./types";
+import { DatabaseConfiguration, MetalsApiConfiguration } from "./types";
 import { DatabaseManager } from "./database";
 import { MetalsAPI, Pricer } from "./pricer";
 
-const configuration: Configuration = config;
-const { database, metalsAPI: metalsApiConfiguration } = configuration;
+const metalsApiConfiguration: Omit<MetalsApiConfiguration, "token"> =
+  config.metalsAPI;
+const database: Omit<DatabaseConfiguration, "host" | "password"> =
+  config.database;
 
-createConnection(database)
-  .then((connection) => {
-    console.log("Connected with database...");
-    const token = process.env.TOKEN_API;
-    if (undefined === token) {
-      throw new Error("Missing API token");
-    }
+const password = process.env.MYSQL_ROOT_PASSWORD;
+const host = process.env.MYSQL_HOST;
 
-    const databaseManager = DatabaseManager.create(connection);
-    const metalsApiOptions: MetalsAPI.MetalsAPIOptions = {
-      ...metalsApiConfiguration,
-      token,
-    };
-    const metalsApi = MetalsAPI.create(metalsApiOptions);
-    const pricer = Pricer.create(databaseManager, metalsApi);
+if (!password || !host) {
+  throw new Error("Missing DB password and host");
+} else {
+  const databaseConfiguration: DatabaseConfiguration = {
+    ...database,
+    password,
+    host,
+  };
 
-    pricer.run();
-  })
-  .catch(console.warn);
+  createConnection(databaseConfiguration)
+    .then((connection) => {
+      console.log("Connected with database...");
+      const token = process.env.TOKEN_API;
+      if (undefined === token) {
+        throw new Error("Missing API token");
+      }
+
+      const databaseManager = DatabaseManager.create(connection);
+      const metalsApiOptions: MetalsApiConfiguration = {
+        ...metalsApiConfiguration,
+        token,
+      };
+      const metalsApi = MetalsAPI.create(metalsApiOptions);
+      const pricer = Pricer.create(databaseManager, metalsApi);
+
+      pricer.run();
+    })
+    .catch(console.warn);
+}

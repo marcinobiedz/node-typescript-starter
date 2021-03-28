@@ -10,3 +10,5 @@
 !src/**/*
 !src/static/
 !src/static/**/*
+!.dockerignore
+!.env
