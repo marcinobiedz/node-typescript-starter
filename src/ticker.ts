@@ -24,11 +24,12 @@ const databaseConfiguration = databaseConfigurationWithDefaults(database);
 const metalsApiOptions = apiConfigurationWithDefaults(metalsApiConfiguration);
 
 const notifications = new Subject<PricerNotification>();
-const server = createServer((socket) =>
+const server = createServer((socket) => {
+  console.log("New ticker subscriber...");
   notifications.subscribe((notification) =>
     socket.write(Buffer.from(notification))
-  )
-);
+  );
+});
 server.listen(TICKER_NOTIFICATION_PORT, () =>
   console.log("Ticker ready for notifications subscribers...")
 );
