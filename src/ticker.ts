@@ -1,38 +1,32 @@
-import * as config from "./static/configuration.json";
+import * as configuration from "./static/configuration.json";
 import { createServer } from "net";
 import { createConnection } from "mariadb";
-import { DatabaseConfiguration, MetalsApiConfiguration } from "./types";
+import { Config } from "./types";
 import { DatabaseManager } from "./database";
+import { Pricer, PricerNotification } from "./pricer";
 import {
   apiConfigurationWithDefaults,
-  MetalsAPI,
-  Pricer,
-  PricerNotification,
-} from "./pricer";
-import {
   databaseConfigurationWithDefaults,
   TICKER_NOTIFICATION_PORT,
 } from "./shared";
 import { Subject } from "rxjs";
+import { MetalsAPI } from "./metalsAPI";
 
-const metalsApiConfiguration: Omit<MetalsApiConfiguration, "token"> =
-  config.metalsAPI;
-const database: Omit<DatabaseConfiguration, "host" | "password"> =
-  config.database;
-
+const { database, metalsAPI } = configuration as Config;
 const databaseConfiguration = databaseConfigurationWithDefaults(database);
-const metalsApiOptions = apiConfigurationWithDefaults(metalsApiConfiguration);
+const metalsApiOptions = apiConfigurationWithDefaults(metalsAPI);
 
 const notifications = new Subject<PricerNotification>();
 const server = createServer((socket) => {
   console.log("New ticker subscriber...");
-  notifications.subscribe((notification) =>
+  const subscription = notifications.subscribe((notification) =>
     socket.write(Buffer.from(notification))
   );
+
+  socket.on("close", () => {
+    subscription.unsubscribe();
+  });
 });
-server.listen(TICKER_NOTIFICATION_PORT, () =>
-  console.log("Ticker ready for notifications subscribers...")
-);
 
 createConnection(databaseConfiguration)
   .then((connection) => {
@@ -43,5 +37,9 @@ createConnection(databaseConfiguration)
     const pricer = Pricer.create(databaseManager, metalsApi, notifications);
 
     pricer.run();
+
+    server.listen(TICKER_NOTIFICATION_PORT, () =>
+      console.log("Ticker ready for notifications subscribers...")
+    );
   })
   .catch(console.warn);

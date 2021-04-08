@@ -1,4 +1,4 @@
-import { MetalsAPI } from "./MetalsAPI";
+import { MetalsAPI } from "../metalsAPI";
 import { Rates } from "../database/models";
 
 export namespace Converter {

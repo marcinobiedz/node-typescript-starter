@@ -1,7 +1,7 @@
-import { MetalsApiConfiguration } from "../types";
 import nodeFetch from "node-fetch";
 import { mergeRight } from "ramda";
-import { nextRates } from "../mock";
+import { nextRates } from "./mock";
+import { MetalsApiInnerConfig } from "../types";
 
 export type MetalsAPI = {
   getSupportedSymbols(): Promise<MetalsAPI.SupportedSymbols>;
@@ -30,24 +30,15 @@ export namespace MetalsAPI {
       info: string;
     };
   };
-  namespace RequestDefaults {
-    export const latestRatesDefaults: LatestRates.Request = {
-      base: "USD",
-      symbols: ["XAU", "XAG", "XPT"],
-    };
-  }
 
-  export const create = (configuration: MetalsApiConfiguration): MetalsAPI => {
+  export const create = (configuration: MetalsApiInnerConfig): MetalsAPI => {
     const metalsApiUrl = "https://www.metals-api.com";
-    const { token } = configuration;
+    const { token, ...restConfiguration } = configuration;
     const baseURL = new URL(metalsApiUrl);
 
     return {
       getLatestRates(options = {}) {
-        const { symbols, base } = mergeRight(
-          RequestDefaults.latestRatesDefaults,
-          options
-        );
+        const { symbols, base } = mergeRight(restConfiguration, options);
         const latestURL = new URL("api/latest", baseURL);
         latestURL.searchParams.set("access_key", token);
         latestURL.searchParams.set("base", base);

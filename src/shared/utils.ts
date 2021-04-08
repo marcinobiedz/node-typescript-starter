@@ -1,8 +1,13 @@
-import { DatabaseConfiguration } from "../types";
+import {
+  DatabaseConfig,
+  DatabaseInnerConfig,
+  MetalsApiConfig,
+  MetalsApiInnerConfig,
+} from "../types";
 
 export const databaseConfigurationWithDefaults = (
-  database: Omit<DatabaseConfiguration, "host" | "password">
-): DatabaseConfiguration => {
+  database: DatabaseConfig
+): DatabaseInnerConfig => {
   const password = process.env.MYSQL_ROOT_PASSWORD;
   const host = process.env.MYSQL_HOST;
   if (!password || !host) {
@@ -12,5 +17,18 @@ export const databaseConfigurationWithDefaults = (
     ...database,
     password,
     host,
+  };
+};
+
+export const apiConfigurationWithDefaults = (
+  metalsApiConfiguration: MetalsApiConfig
+): MetalsApiInnerConfig => {
+  const token = process.env.TOKEN_API;
+  if (undefined === token) {
+    throw new Error("Missing API token");
+  }
+  return {
+    ...metalsApiConfiguration,
+    token,
   };
 };

@@ -1,6 +1,6 @@
 import { DatabaseManager } from "../database";
 import { CronJob } from "cron";
-import { MetalsAPI } from "./MetalsAPI";
+import { MetalsAPI } from "../metalsAPI";
 import { Converter } from "./Converter";
 import { Subject } from "rxjs";
 

@@ -1,4 +1,4 @@
-import { MetalsAPI } from "../pricer";
+import { MetalsAPI } from "../MetalsAPI";
 
 const baseValues = {
   USD: 1,
