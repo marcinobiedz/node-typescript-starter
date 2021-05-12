@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/marcinobiedz/node-typescript-starter#readme",
   "dependencies": {
+    "@tensorflow/tfjs-node": "^3.6.1",
     "concurrently": "^6.0.0"
   },
   "devDependencies": {
