@@ -5,11 +5,14 @@
   "main": "index.js",
   "scripts": {
     "clean": "rimraf -rf dist",
-    "start": "node ./dist/index.js",
+    "start-js": "node ./dist/index.js",
     "compile": "tsc",
     "watch-ts": "tsc -w",
     "watch-js": "nodemon ./dist/index.js",
-    "debug": "concurrently -k \"npm:watch-*\""
+    "debug": "concurrently -k \"npm:watch-*\"",
+    "prod": "concurrently \"npm:start-*\"",
+    "start": "npm run clean && npm run compile && npm run debug",
+    "start:prod": "npm run clean && npm run compile && npm run prod"
   },
   "repository": {
     "type": "git",
